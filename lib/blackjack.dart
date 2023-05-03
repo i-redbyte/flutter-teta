@@ -1,6 +1,7 @@
 import 'dart:io';
 
 void main() {
+  const thresholdScore = 17;
   stdout.writeln('***********************************************************');
   stdout.writeln('\t\t\tДобро пожаловать в игру блек-джек!');
   stdout.writeln('***********************************************************');
@@ -26,7 +27,7 @@ void main() {
       }
     } else if (input == '2') {
       bool isShow = true;
-      while (dealer.getScore() < 17) {
+      while (dealer.getScore() < thresholdScore) {
         isShow = false;
         stdout.writeln('Ход Дилера:');
         dealer.addCard(deck.drawCard());
@@ -131,6 +132,7 @@ class Card {
 }
 
 class Player {
+  static const winnerScore =21;
   final List<Card> hand = [];
 
   void addCard(Card card) {
@@ -150,7 +152,7 @@ class Player {
         aceCount++;
       }
     }
-    while (score > 21 && aceCount > 0) {
+    while (score > winnerScore && aceCount > 0) {
       score -= 10;
       aceCount--;
     }
@@ -158,6 +160,6 @@ class Player {
   }
 
   bool isBust() {
-    return getScore() > 21;
+    return getScore() > winnerScore;
   }
 }
