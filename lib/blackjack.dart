@@ -7,8 +7,8 @@ void main() {
   stdout.writeln('***********************************************************');
   final deck = Deck();
 
-  final player = Player();
-  final dealer = Player();
+  final player = User();
+  final dealer = Dealer();
 
   bool isShowTitle = true;
   while (true) {
@@ -16,25 +16,25 @@ void main() {
       setupPlayers(deck, player, dealer);
       isShowTitle = false;
     }
-    stdout.writeln('Ваш ход (1 - Взять, 2 - Пас):');
+    player.printWalk();
     final input = stdin.readLineSync();
     if (input == '1') {
       player.addCard(deck.drawCard());
-      stdout.writeln('Ваши карты: ${player.hand}');
+      player.showHand();
       if (player.isBust()) {
         stdout.writeln('--->Вы проиграли!<---');
-        return;
+        break;
       }
     } else if (input == '2') {
       bool isShow = true;
       while (dealer.getScore() < thresholdScore) {
         isShow = false;
-        stdout.writeln('Ход Дилера:');
+        dealer.printWalk();
         dealer.addCard(deck.drawCard());
-        stdout.writeln('Дилер: ${dealer.hand}');
+        dealer.showHand();
       }
-      if(isShow) {
-        stdout.writeln('Дилер: ${dealer.hand}');
+      if (isShow) {
+        dealer.showHand();
       }
       if (dealer.isBust() || player.getScore() > dealer.getScore()) {
         stdout.writeln('--->Вы победили!<---');
@@ -45,7 +45,7 @@ void main() {
       }
       stdout.writeln('Играть еще? (y/n)');
       final input = stdin.readLineSync();
-      if (input?.toLowerCase() !='y') {
+      if (input?.toLowerCase() != 'y') {
         break;
       }
       dealer.clearCard();
@@ -131,15 +131,15 @@ class Card {
   }
 }
 
-class Player {
-  static const winnerScore =21;
+abstract class Player {
+  static const winnerScore = 21;
   final List<Card> hand = [];
 
   void addCard(Card card) {
     hand.add(card);
   }
 
-  void clearCard(){
+  void clearCard() {
     hand.clear();
   }
 
@@ -161,5 +161,43 @@ class Player {
 
   bool isBust() {
     return getScore() > winnerScore;
+  }
+
+  void printWalk();
+
+  void showHand();
+}
+
+class Dealer extends Player {
+  @override
+  String toString() {
+    return "Дилер";
+  }
+
+  @override
+  void printWalk() {
+    stdout.writeln('Ход Дилера:');
+  }
+
+  @override
+  void showHand() {
+    stdout.writeln('Дилер: ${hand}');
+  }
+}
+
+class User extends Player {
+  @override
+  String toString() {
+    return "Игрок";
+  }
+
+  @override
+  void printWalk() {
+    stdout.writeln('Ваш ход (1 - Взять, 2 - Пас):');
+  }
+
+  @override
+  void showHand() {
+    stdout.writeln('Ваши карты: $hand');
   }
 }
