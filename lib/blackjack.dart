@@ -181,7 +181,7 @@ class Dealer extends Player {
 
   @override
   void showHand() {
-    stdout.writeln('Дилер: ${hand}');
+    stdout.writeln('Дилер: $hand');
   }
 }
 
